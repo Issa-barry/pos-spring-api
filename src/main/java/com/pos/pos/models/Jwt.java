@@ -16,8 +16,10 @@ public class Jwt {
     private Long id;
     private boolean desactive;
     private boolean expire;
+    @Getter
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
     private String valeur;
+
 }

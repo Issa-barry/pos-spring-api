@@ -19,12 +19,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+
+@Entity
+@Table(name = "utilisateur")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "utilisateur")
 public class Utilisateur implements UserDetails {
 
     @Id
@@ -33,7 +34,7 @@ public class Utilisateur implements UserDetails {
     @Column(name = "mot_de_passe")
     private String mdp;
     private String nom;
-
+    @Setter
     private String email;
     private boolean actif = false;
     @OneToOne(cascade = CascadeType.ALL)

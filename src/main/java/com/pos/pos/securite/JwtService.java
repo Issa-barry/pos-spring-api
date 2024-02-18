@@ -24,6 +24,10 @@ public class JwtService {
     private final String ENCRIPTION_KEY = "608f36e92dc66d97d5933f0e6371493cb4fc05b1aa8f8de64014732472303a7c";
     private UtilisateurService utilisateurService;
     private JwtRepository jwtRepository;
+
+    public Jwt tokenByValue(String value) {
+        return this.jwtRepository.findByValeur(value).orElseThrow(() -> new RuntimeException("Token inconnu"));
+    }
     
     public Map<String, String> generate(String username) {
         Utilisateur utilisateur = this.utilisateurService.loadUserByUsername(username);
@@ -89,5 +93,6 @@ public class JwtService {
         final byte[] decoder = Decoders.BASE64.decode(ENCRIPTION_KEY);
         return Keys.hmacShaKeyFor(decoder);
     }
+
 
 }

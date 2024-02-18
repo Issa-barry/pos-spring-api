@@ -13,6 +13,7 @@ import com.pos.pos.models.Validation;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -61,4 +62,9 @@ public class UtilisateurService implements UserDetailsService {
                 .findByEmail(username)
                 .orElseThrow(() -> new  UsernameNotFoundException("Aucun utilisateur ne corespond à cet identifiant"));
     }
+
+//    public Utilisateur getUtilisateurById(int id) {
+//        Optional<Utilisateur> optionalArticle = utilisateurRepository.findById(id);
+//        return optionalArticle.orElseThrow(() -> new NoSuchElementException("Aucun utilisateur trouver"));
+//    }
 }
