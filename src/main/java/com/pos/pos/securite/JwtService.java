@@ -1,5 +1,9 @@
 package com.pos.pos.securite;
 
+import com.pos.pos.models.Jwt;
+import com.pos.pos.models.Utilisateur;
+import com.pos.pos.repository.JwtRepository;
+import com.pos.pos.service.UtilisateurService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -7,8 +11,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.pos.pos.models.Utilisateur;
-import com.pos.pos.service.UtilisateurService;
 
 import java.security.Key;
 import java.util.Date;
@@ -18,12 +20,27 @@ import java.util.function.Function;
 @AllArgsConstructor
 @Service
 public class JwtService {
+    public static final String BEARER = "bearer";
     private final String ENCRIPTION_KEY = "608f36e92dc66d97d5933f0e6371493cb4fc05b1aa8f8de64014732472303a7c";
     private UtilisateurService utilisateurService;
+    private JwtRepository jwtRepository;
+
+    public Jwt tokenByValue(String value) {
+        return this.jwtRepository.findByValeur(value).orElseThrow(() -> new RuntimeException("Token inconnu"));
+    }
     
     public Map<String, String> generate(String username) {
         Utilisateur utilisateur = this.utilisateurService.loadUserByUsername(username);
-        return this.generateJwt(utilisateur);
+        Map<String, String> jwtMap = this.generateJwt(utilisateur);
+        Jwt jwt = Jwt
+                .builder()
+                .valeur(jwtMap.get(BEARER))
+                .desactive(false)
+                .expire(false)
+                .utilisateur(utilisateur)
+                .build();
+        this.jwtRepository.save(jwt);
+        return jwtMap;
     }
 
     public String extractUsername(String token) {
@@ -76,5 +93,6 @@ public class JwtService {
         final byte[] decoder = Decoders.BASE64.decode(ENCRIPTION_KEY);
         return Keys.hmacShaKeyFor(decoder);
     }
+
 
 }
